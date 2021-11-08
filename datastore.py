@@ -24,7 +24,7 @@ def write(fn, signalid, signal, meta=None):
         dset.attrs['capture_time'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         for k,v in meta.items():
             if v is not None:
-                dset.attrs[k] = v
+                dset.attrs[k] = str(v)
     return uuid
 
 

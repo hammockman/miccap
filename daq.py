@@ -116,8 +116,8 @@ def acquire(
     acq_samples = pretrigger_samples + posttrigger_samples
     bufsize = int(np.ceil(rolling_period * sample_rate))
 
-    #sys.stdout.write(f'setting trigger @ {trigger_level}')
-    #sys.stdout.write(f' ({pretrigger_samples} pre, {posttrigger_samples} post)')
+    sys.stdout.write(f'setting trigger @ {trigger_level}\n')
+    sys.stdout.write(f' ({pretrigger_samples} pre, {posttrigger_samples} post)\n')
 
     with nidaqmx.Task('rolling_acquire') as task:
         for mic_line in mic_lines:
@@ -238,6 +238,8 @@ if __name__=="__main__":
         trigger_level=meta['trigger_level'],
         display=True
     )
+    for chan, gain in enumerate(meta['gain']):
+        data[chan, :] *= gain
     uuid = datastore.write(
         meta['h5fn'],
         signalid,

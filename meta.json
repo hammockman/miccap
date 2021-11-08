@@ -1,0 +1,10 @@
+{
+    "mic": ["chung1", "chung2", "GRAS 40PH", null],
+    "loc": ["end", "end", "end", null],
+    "dir": ["flat", "edge", "end", null],
+    "gain": [1.0, 1.0, 10.0, 1.0],
+    "trigger_level": 20.0
+}
+    
+
+
