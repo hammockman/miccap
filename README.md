@@ -8,8 +8,5 @@ The 9234 does not support hardware triggering https://knowledge.ni.com/Knowledge
 Targeting a python environment:
 
 ```sh
-> conda create --name ni python=3.9 scipy h5py
-> conda install -c conda-forge nidaqmx-python
-> conda install -c conda-forge wxpython
-> conda install -c conda-forge matplotlib
+> conda create --name ni -c conda-forge python=3.9 scipy h5py nidaqmx-python wxpython matplotlib
 ```
