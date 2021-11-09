@@ -104,7 +104,8 @@ def acquire(
         trigger_level=None,
         pretrigger_time=1e-3,
         posttrigger_time=100e-3,
-        display=True):
+        display=True,
+        display_gains=None):
     """Acquire microphone data with software triggering
     """
     import nidaqmx
@@ -184,20 +185,23 @@ def acquire(
     t = (np.arange(data.shape[1])-pretrigger_samples)/sample_rate
 
     if display:
+        from scipy.signal import periodogram
         fig = plt.figure()
         ax_sig = fig.add_subplot(211)
         ax_fft = fig.add_subplot(212)
         ax_sig.cla()
-        ax_sig.plot(t, data.T)
-        ax_sig.set_xlim((-0.003,0.03))
-        ax_sig.grid()
         ax_fft.cla()
         for chan in range(data.shape[0]):
-            from scipy.signal import periodogram
-            f, spec = periodogram(data[chan,:], nfft=2**22, fs=sample_rate, scaling='spectrum')
+            s = data[chan,:]
+            if display_gains is not None:
+                s *= display_gains[chan]
+            ax_sig.plot(t, s)
+            f, spec = periodogram(s, nfft=2**12, fs=sample_rate, scaling='spectrum')
             ax_fft.semilogy(f, np.sqrt(spec))
+        ax_sig.set_xlim((-0.003,0.03))
         ax_fft.set_xlim((0,500))
         ax_fft.set_ylim((0.01,10))
+        ax_sig.grid()
         ax_fft.grid()
         plt.show()
 
@@ -236,10 +240,9 @@ if __name__=="__main__":
         rolling_period=meta['rolling_period'],
         sample_rate=meta['sample_rate'],
         trigger_level=meta['trigger_level'],
+        display_gains=meta['gains'],
         display=True
     )
-    for chan, gain in enumerate(meta['gain']):
-        data[chan, :] *= gain
     uuid = datastore.write(
         meta['h5fn'],
         signalid,
